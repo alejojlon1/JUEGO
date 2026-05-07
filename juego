@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NINGUNA SANTA 🔥 FINAL</title>
+    <!-- Tailwind CSS para diseño moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .neo-gradient {
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .neon-text-pink { text-shadow: 0 0 10px #ff4d94, 0 0 20px #ff4d94; }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #ff4d94, #bc84ee);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 77, 148, 0.5);
+        }
+
+        .category-card {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .category-card:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-screen { animation: fadeIn 0.4s ease-out forwards; }
+    </style>
+</head>
+<body>
+    <div class="neo-gradient"></div>
+
+    <div id="app" class="w-full max-w-md glass rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
+        
+        <!-- HEADER (Visible durante el juego) -->
+        <div id="game-header" class="hidden mb-6 border-b border-white/10 pb-4 flex justify-between items-end">
+            <div>
+                <p class="text-[10px] uppercase tracking-[0.2em] text-pink-400 font-bold">Turno de:</p>
+                <h2 id="display-current-player" class="text-xl font-bold truncate max-w-[150px]">-</h2>
+            </div>
+            <div class="text-right">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg font-black text-yellow-400">⭐ <span id="display-score">0</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 1: REGISTRO DE JUGADORES -->
+        <div id="screen-setup" class="animate-screen space-y-6">
+            <div class="text-center">
+                <h1 class="text-5xl font-black neon-text-pink mb-2 tracking-tighter italic">NINGUNA SANTA</h1>
+                <p class="text-white/60 text-xs italic uppercase tracking-[0.3em]">Edición Local 🔥</p>
+            </div>
+
+            <div id="players-input-container" class="space-y-3">
+                <input type="text" placeholder="Nombre del Jugador 1" class="player-input w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-center focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all">
+                <input type="text" placeholder="Nombre del Jugador 2" class="player-input w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-center focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all">
+            </div>
+
+            <button onclick="addInput()" class="w-full py-2 text-pink-400 text-xs font-bold uppercase tracking-widest">+ Añadir más amigos</button>
+            <button onclick="startGame()" class="btn-primary w-full p-4 rounded-2xl font-bold text-white uppercase tracking-widest shadow-lg">Comenzar Pecado</button>
+        </div>
+
+        <!-- PANTALLA 2: MENÚ DE CATEGORÍAS -->
+        <div id="screen-menu" class="hidden animate-screen">
+            <div class="text-center mb-6">
+                <p class="text-[10px] text-white/40 uppercase tracking-widest">Es el momento de...</p>
+                <h3 id="menu-player-name" class="text-2xl font-black text-pink-500 uppercase italic">-</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div onclick="selectCategory('Random', 50)" class="category-card p-5 rounded-[2rem] glass flex flex-col items-center">
+                    <span class="text-3xl mb-1">🎲</span>
+                    <span class="font-bold text-[10px] uppercase">Random</span>
+                    <span class="text-[8px] opacity-40">50 PTS</span>
+                </div>
+                <div onclick="selectCategory('Verdades', 100)" class="category-card p-5 rounded-[2rem] glass flex flex-col items-center">
+                    <span class="text-3xl mb-1">💡</span>
+                    <span class="font-bold text-[10px] uppercase">Verdades</span>
+                    <span class="text-[8px] opacity-40">100 PTS</span>
+                </div>
+                <div onclick="selectCategory('Atrevido', 150)" class="category-card p-5 rounded-[2rem] glass flex flex-col items-center">
+                    <span class="text-3xl mb-1">📢</span>
+                    <span class="font-bold text-[10px] uppercase">Atrevido</span>
+                    <span class="text-[8px] opacity-40">150 PTS</span>
+                </div>
+                <div onclick="selectCategory('Candente', 250)" class="category-card p-5 rounded-[2rem] glass flex flex-col items-center">
+                    <span class="text-3xl mb-1">🌶️</span>
+                    <span class="font-bold text-[10px] uppercase">Candente</span>
+                    <span class="text-[8px] opacity-40">250 PTS</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 3: EL RETO -->
+        <div id="screen-game" class="hidden animate-screen space-y-8 text-center">
+            <div class="inline-block px-4 py-1 bg-pink-500/10 border border-pink-500/40 rounded-full">
+                <span id="game-cat-display" class="text-[10px] font-black text-pink-400 uppercase tracking-widest">-</span>
+            </div>
+
+            <div class="min-h-[160px] flex items-center justify-center">
+                <p id="game-question-text" class="text-xl font-medium leading-relaxed italic text-white px-2"></p>
+            </div>
+
+            <div class="space-y-4">
+                <button onclick="finishTurn(true)" class="btn-primary w-full p-4 rounded-2xl font-black text-lg uppercase shadow-xl">¡Cumplido! 🔥</button>
+                <button onclick="finishTurn(false)" class="w-full text-white/40 text-xs py-2 uppercase tracking-widest font-bold hover:text-white transition-colors">Cobardía (Pasar)</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA 4: RESULTADOS FINALES -->
+        <div id="screen-final" class="hidden animate-screen text-center space-y-6">
+            <h2 class="text-3xl font-black neon-text-pink italic">FIN DEL JUEGO</h2>
+            <div id="leaderboard" class="space-y-3">
+                <!-- Se llena dinámicamente -->
+            </div>
+            <button onclick="location.reload()" class="btn-primary w-full p-4 rounded-2xl font-bold text-white uppercase tracking-widest">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        // BASE DE DATOS LOCAL
+        const PREGUNTAS = {
+            Random: [
+                "Elige a alguien para que beba un trago contigo.",
+                "Cuenta el chiste más malo que te sepas; si nadie se ríe, pierdes los puntos.",
+                "Di el abecedario al revés lo más rápido que puedas.",
+                "Todos los que tengan calcetines blancos pierden 50 puntos.",
+                "Tienes que hablar con acento extranjero hasta que sea tu turno otra vez.",
+                "Haz una imitación de un animal y que el grupo adivine cuál es.",
+                "Piedra, papel o tijera contra el jugador de la izquierda; el que pierde bebe.",
+                "¿Prefieres viajar al futuro o al pasado?",
+                "¿Cuál es el objeto más inútil que has comprado?",
+                "¿Has fingido una llamada para irte?",
+                "¿Qué es lo más raro que has comido?",
+                "¿Quién es la persona más sexy de aquí?",
+                "¿Has mentido hoy?",
+                "¿Qué es lo que más te atrae de alguien?",
+                "¿Lugar favorito para una aventura?",
+                "¿Qué prenda te quitarías ahora?",
+                "¿Besarías a la persona de enfrente?",
+                "Sacate una prenda",
+                "¿Cuál es tu fantasía sexual que nunca te has atrevido a cumplir?",
+                "Dale un beso de mariposa (con las pestañas) en el cuello a alguien de la sala.",
+                "Describe el mejor encuentro íntimo que has tenido en tu vida.",
+                "Susúrrale algo sucio al oído a la persona de la izquierda",
+                "¿Qué parte del cuerpo de la persona a tu derecha te crees que es más sexy?",
+                "Simula tu posición sexual favorita durante 10 segundos (con ropa).",
+                "¿Cuál es el lugar más extraño donde has tenido relaciones?",
+                "Deja que alguien del grupo te dé un beso apasionado en el cuello.",
+                "¿Alguna vez has tenido un trío o estarías dispuesto/a?",
+                "Quítate los calcetines usando solo la boca.",
+                "Susúrrale algo sucio al oído a la persona de la derecha",
+                "¿Cuál es el objeto más inútil que has comprado?",
+                "¿Alguna vez has fingido una llamada para irte?",
+                "¿Qué harías si fueras invisible un día?",
+                "¿Qué es lo más vergonzoso que hay en tu habitación?",
+                "El último en tocarse la nariz cumple un reto del grupo.",
+                "Habla con acento extranjero hasta tu próximo turno."
+            ],
+            Verdades: [
+                "¿Quién es la persona más sexy de aquí?", 
+                "¿Has mentido hoy?", 
+                "¿Qué es lo que más te atrae de alguien?",
+                "¿Has participado en tríos?",
+                "¿Qué es lo que más te atrae de los/las chicos/as?",
+                "¿Has espiado a alguien mientras tiene sexo?",
+                "¿Quién de los presentes te parece el más atractivo/a?",
+                "¿Qué es lo más vergonzoso que has hecho estando ebrio/a?",
+                "¿Alguna vez has revisado el celular de tu pareja o un ex?",
+                "¿Cuál es el secreto que nunca le has contado a tus padres?",
+                "¿Has mentido en este juego para no quedar mal?",
+                "¿Cuál es tu placer culposo más extraño?",
+                "¿Alguna vez has fingido un orgasmo o interés en una cita?",
+                "¿Qué es lo más ilegal que has hecho en tu vida?",
+                "¿Quién es la persona más sexy de esta sala?", 
+                "¿Has stalkeado a tu ex hoy?", 
+                "¿Alguna vez has mentido para no venir a una fiesta?", 
+                "¿Qué es lo que más te atrae de alguien?",
+                "¿Quién de aquí te parece más atractivo/a?",
+                "¿Qué es lo más vergonzoso que hiciste borracho/a?",
+                "¿Alguna vez revisaste el celular de tu pareja sin permiso?",
+                "¿Cuál es tu placer culposo más extraño?",
+                "¿Has mentido en este juego para no quedar mal?"
+            ],
+            Atrevido: [
+                "Intercambia una prenda con quien tengas a la derecha.", 
+                "Envía un corazón a tu ex.", 
+                "Baila sin música 30 segundos.",
+                "Dale un beso en la mejilla a la persona que tengas a tu izquierda.",
+                "Quítate una prenda de vestir (que no sea calzado).",
+                "Hazle un masaje de un minuto a la persona de tu derecha.",
+                "Muestra una foto de tu galería atrevida.",
+                "Intenta hacer twerk durante 30 segundos frente a todos",
+                "Intercambia una prenda con quien tengas a la derecha.", 
+                "Envía un emoji de corazón a la última persona que te escribió.", 
+                "Baila sin música por 30 segundos.", 
+                "Deja que alguien vea tu galería por 10 seg.",
+                "Dale un beso en la mejilla a quien esté a tu izquierda.",
+                "Deja que el grupo publique una historia en tu Instagram.",
+                "Hazle un masaje de un minuto a la persona de tu derecha.",
+                "Muestra la última foto de tu galería sin borrar nada.",
+                "Intenta hacer twerk durante 30 segundos frente a todos."
+            ],
+            Candente: [
+                "¿Lugar favorito para una aventura?",
+                "¿Qué prenda te quitarías ahora?",
+                "¿Besarías a la persona de enfrente?",
+                "Sacate una prenda",
+                "¿Cuál es tu fantasía sexual que nunca te has atrevido a cumplir?",
+                "Dale un beso de mariposa (con las pestañas) en el cuello a alguien de la sala.",
+                "Describe el mejor encuentro íntimo que has tenido en tu vida.",
+                "Susúrrale algo sucio al oído a la persona de la izquierda",
+                "¿Qué parte del cuerpo de la persona a tu derecha te crees que es más sexy?",
+                "Simula tu posición sexual favorita durante 10 segundos (con ropa).",
+                "¿Cuál es el lugar más extraño donde has tenido relaciones?",
+                "Deja que alguien del grupo te dé un beso apasionado en el cuello.",
+                "¿Alguna vez has tenido un trío o estarías dispuesto/a?",
+                "Quítate los calcetines usando solo la boca.",
+                "Susúrrale algo sucio al oído a la persona de la derecha",
+                "¿Cuál es tu lugar favorito para tener una aventura?",
+                "¿Qué prenda de ropa te quitarías ahora mismo?",
+                "¿Qué es lo más loco que has hecho en la cama?",
+                "¿Besarías a la persona que tienes enfrente?",
+                "¿Cuál es tu fantasía sexual nunca cumplida?",
+                "Describe el mejor encuentro íntimo que has tenido.",
+                "Susúrrale algo sucio al oído a la persona que elijas.",
+                "¿Qué parte del cuerpo de la persona a tu derecha es más sexy?",
+                "Simula tu posición favorita durante 10 segundos (con ropa)."
+            ]
+        };
+
+        // ESTADO DEL JUEGO
+        let jugadores = [];
+        let turnoActual = 0;
+        let puntosEnJuego = 0;
+
+        // FUNCIONES DE NAVEGACIÓN
+        function showScreen(id) {
+            document.getElementById('screen-setup').classList.add('hidden');
+            document.getElementById('screen-menu').classList.add('hidden');
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-final').classList.add('hidden');
+            document.getElementById(id).classList.remove('hidden');
+            
+            if (id !== 'screen-setup' && id !== 'screen-final') {
+                document.getElementById('game-header').classList.remove('hidden');
+            } else {
+                document.getElementById('game-header').classList.add('hidden');
+            }
+        }
+
+        function addInput() {
+            const container = document.getElementById('players-input-container');
+            const num = container.querySelectorAll('input').length + 1;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = `Nombre del Jugador ${num}`;
+            input.className = 'player-input w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-center focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all';
+            container.appendChild(input);
+        }
+
+        function startGame() {
+            const inputs = document.querySelectorAll('.player-input');
+            jugadores = [];
+            inputs.forEach(input => {
+                const name = input.value.trim();
+                if (name) jugadores.push({ nombre: name, puntos: 0 });
+            });
+
+            if (jugadores.length < 2) {
+                alert("Se necesitan al menos 2 pecadores para jugar.");
+                return;
+            }
+
+            updateUI();
+            showScreen('screen-menu');
+        }
+
+        function updateUI() {
+            const actual = jugadores[turnoActual];
+            document.getElementById('display-current-player').textContent = actual.nombre;
+            document.getElementById('menu-player-name').textContent = actual.nombre;
+            document.getElementById('display-score').textContent = actual.puntos;
+        }
+
+        function selectCategory(cat, pts) {
+            puntosEnJuego = pts;
+            const lista = PREGUNTAS[cat];
+            const pregunta = lista[Math.floor(Math.random() * lista.length)];
+
+            document.getElementById('game-cat-display').textContent = `${cat} (+${pts} PTS)`;
+            document.getElementById('game-question-text').textContent = pregunta;
+            showScreen('screen-game');
+        }
+
+        function finishTurn(cumplido) {
+            if (cumplido) {
+                jugadores[turnoActual].puntos += puntosEnJuego;
+            }
+
+            turnoActual++;
+
+            if (turnoActual >= jugadores.length) {
+                if (confirm("¿Quieren ver los resultados finales o seguir otra ronda?")) {
+                    showFinal();
+                } else {
+                    turnoActual = 0;
+                    updateUI();
+                    showScreen('screen-menu');
+                }
+            } else {
+                updateUI();
+                showScreen('screen-menu');
+            }
+        }
+
+        function showFinal() {
+            const board = document.getElementById('leaderboard');
+            const sorted = [...jugadores].sort((a, b) => b.puntos - a.puntos);
+            
+            board.innerHTML = sorted.map((p, i) => `
+                <div class="flex justify-between items-center p-4 ${i === 0 ? 'bg-pink-500/20 border-pink-500' : 'bg-white/5 border-white/10'} border rounded-2xl">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl">${i === 0 ? '👑' : i + 1}</span>
+                        <span class="font-bold">${p.nombre}</span>
+                    </div>
+                    <span class="font-black text-pink-400">${p.puntos} pts</span>
+                </div>
+            `).join('');
+
+            showScreen('screen-final');
+        }
+    </script>
+</body>
+</html>
